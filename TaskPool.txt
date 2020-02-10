@@ -1,0 +1,5 @@
+Task pool.
+Here we will store the task pool for the project.
+#3 :
+#2 :
+#1 : init the repository.
