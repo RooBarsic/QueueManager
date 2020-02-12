@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Author: Farrukh Karimov
@@ -16,52 +17,62 @@ public class EngineeredQueue {
     private int servedCustomersNumber = 0;
     private List<Customer> customers = new ArrayList<>();
 
-    public EngineeredQueue(@NotNull final String queueName){
+    public EngineeredQueue(@NotNull final String queueName) {
         this.queueName = queueName;
     }
 
-    public String getQueueName(){
+    public String printQueue() {
+        String print = "";
+        int i = 1;
+        for (Customer usr : customers) {
+            print = print.concat("\n" + i + " " + usr.getPhoneNumber());
+            i++;
+        }
+        return print;
+    }
+
+    public String getQueueName() {
         return queueName;
     }
 
-    public void addCustomer(final Customer customer){
+    public void addCustomer(final Customer customer) {
         servedCustomersNumber++;
         customers.add(customer);
     }
 
-    public Customer deleteCustomer(final Customer customer){
+    public Customer deleteCustomer(final Customer customer) {
         final int customerPosition = customers.indexOf(customer);
-        if(customerPosition >= 0){
-            return customers.remove(customerPosition);
+        if (customerPosition == -1) {
+            throw new NoSuchElementException("No such customer");
         }
-        return null;
+        return customers.remove(customerPosition);
     }
 
-    public Customer deleteCustomer(final String customerPhoneNumber){
+    public Customer deleteCustomer(final String customerPhoneNumber) {
         return deleteCustomer(new Customer(customerPhoneNumber));
     }
 
-    public int findCustomerPosition(final String customerPhoneNumber){
+    public int findCustomerPosition(final String customerPhoneNumber) {
         return findCustomerPosition(new Customer(customerPhoneNumber));
     }
 
-    public int findCustomerPosition(final Customer customer){
+    public int findCustomerPosition(final Customer customer) {
         final int customerPosition = customers.indexOf(customer);
-        if(customerPosition == -1){
+        if (customerPosition == -1) {
             return -1;
         }
         return customerPosition + 1;
     }
 
-    public int queueSize(){
+    public int queueSize() {
         return customers.size();
     }
 
-    public int getServedCustomersNumber(){
+    public int getServedCustomersNumber() {
         return servedCustomersNumber;
     }
 
-    public void clear(){
+    public void clear() {
         customers.clear();
     }
 }
