@@ -24,7 +24,7 @@ public class EngineeredQueueTest {
         assertEquals(queue.findCustomerPosition(customer3), 3);
         assertEquals(queue.findCustomerPosition(new Customer(phoneNumber)), 3);
 
-        queue.deleteCustomer(customer2);
+        queue.removeCustomer(customer2);
         assertEquals(queue.queueSize(), 2);
 
         assertEquals(queue.findCustomerPosition(customer3), 2);
