@@ -1,23 +1,26 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import exampler.console.MultiQueueController;
+import exampler.console.SingleQueueController;
 import queue.logic.Customer;
-import queue.logic.EngineeredQueue;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class Handler {
     HttpServer server;
 
-    List<EngineeredQueue> queueList = new LinkedList<>();
 
-    public Handler(HttpServer server) {
+    public Handler(HttpServer server, MultiQueueController multiQueueController) {
         this.server = server;
         server.createContext("/api/addNewQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
 
-            queueList.add(new EngineeredQueue(x.get("queueName")));
+            multiQueueController.addQueue(x.get("queueName"));
 
             String respText = "New queue " + x.get("queueName") + " has been created";
             endResponse(exchange, respText);
@@ -25,28 +28,33 @@ public class Handler {
 
         server.createContext("/api/getAllQueues", (exchange -> {
             String respText = "";
-            for (EngineeredQueue queue : queueList) respText = respText.concat(queue.getQueueName().concat("\n"));
+            for (String name : multiQueueController.getQueuesNames()) respText = respText.concat(name.concat("\n"));
             endResponse(exchange, respText);
         }));
 
         server.createContext("/api/addToQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
-            EngineeredQueue queue = findQueue(x.get("queueName"), queueList);
+
+            SingleQueueController singleQueueController = multiQueueController.getQueueController(x.get("queueName"));
+
             String respText;
             try {
-                queue.addCustomer(new Customer(x.get("phoneNumber")));
+                singleQueueController.addCustomer(new Customer(x.get("phoneNumber")));
                 respText = "Success";
             } catch (NullPointerException e) {
                 respText = "No such queue";
             }
             endResponse(exchange, respText);
         }));
+
         server.createContext("/api/deleteFromQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
-            EngineeredQueue queue = findQueue(x.get("queueName"), queueList);
+
+            SingleQueueController singleQueueController = multiQueueController.getQueueController(x.get("queueName"));
+
             String respText;
             try {
-                queue.deleteCustomer(x.get("phoneNumber"));
+                singleQueueController.removeCustomer(new Customer(x.get("phoneNumber")));
                 respText = "Deleted";
             } catch (NullPointerException e) {
                 respText = "No such queue";
@@ -58,10 +66,10 @@ public class Handler {
         }));
         server.createContext("/api/getQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
-            EngineeredQueue queue = findQueue(x.get("queueName"), queueList);
+            SingleQueueController singleQueueController = multiQueueController.getQueueController(x.get("queueName"));
             String respText;
             try {
-                respText = queue.printQueue();
+                respText = singleQueueController.printQueue();
             } catch (NullPointerException e) {
                 respText = "No such queue";
             }
@@ -93,13 +101,5 @@ public class Handler {
             params.put(kv[0], kv[1]);
         }
         return params;
-    }
-
-    public static EngineeredQueue findQueue(String name, List<EngineeredQueue> queues) {
-        for (EngineeredQueue queue : queues) {
-            if (queue.getQueueName().equals(name)) return queue;
-        }
-
-        return null;
     }
 }

@@ -67,9 +67,14 @@ public class SingleQueueController {
 
     /**
      * Метод для получения имени контроллера ( которое является также именем очереди )
+     *
      * @return возвращает имя контроллера
      */
-    public String getControllerName(){
+    public String getControllerName() {
         return controllerName;
+    }
+
+    public String printQueue() {
+        return this.queue.printQueue();
     }
 }

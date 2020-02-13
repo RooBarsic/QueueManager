@@ -107,8 +107,20 @@ public class EngineeredQueue {
     /**
      * метод для очистки очереди
      */
-    public void clear(){
+    public void clear() {
         customers.clear();
         phoneNumbersSet.clear();
+    }
+
+    public String printQueue() {
+        String result = "";
+        int i = 1;
+        for (Customer cs : customers) {
+
+            result = result.concat(i + " " + cs.getPhoneNumber().concat("\n"));
+            i++;
+        }
+        return result;
+
     }
 }
