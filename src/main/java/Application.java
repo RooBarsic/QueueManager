@@ -31,12 +31,11 @@ class Application {
 
         try {
 
-            System.out.println("Initializing API context...");
             ApiContextInitializer.init();
 
             TelegramBotsApi botsApi = new TelegramBotsApi();
 
-            System.out.println("Configuring bot options...");
+
             DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
 
             botOptions.setProxyHost(PROXY_HOST);
