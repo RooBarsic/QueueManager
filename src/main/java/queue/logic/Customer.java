@@ -3,6 +3,8 @@ package queue.logic;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Класс для хранения данных о клиентах.
+ * Храним имя клиента и номер его телефона
  * Author: Farrukh Karimov
  * Modification Date: 09.02.2020
  */
@@ -29,6 +31,7 @@ public class Customer {
         name = customerName;
     }
 
+    @NotNull
     public String getPhoneNumber(){
         return phoneNumber;
     }
@@ -40,11 +43,11 @@ public class Customer {
 
         Customer customer = (Customer) o;
 
-        return getPhoneNumber() != null ? getPhoneNumber().equals(customer.getPhoneNumber()) : customer.getPhoneNumber() == null;
+        return getPhoneNumber().equals(customer.getPhoneNumber());
     }
 
     @Override
     public int hashCode() {
-        return getPhoneNumber() != null ? getPhoneNumber().hashCode() : 0;
+        return getPhoneNumber().hashCode();
     }
 }
