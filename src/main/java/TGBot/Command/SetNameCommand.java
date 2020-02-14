@@ -1,7 +1,6 @@
 package TGBot.Command;
 
 import TGBot.Service.AnonymousService;
-import com.sun.xml.internal.bind.v2.runtime.output.C14nXmlOutput;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
