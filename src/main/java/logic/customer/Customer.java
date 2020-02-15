@@ -1,4 +1,4 @@
-package queue.logic;
+package logic.customer;
 
 import org.jetbrains.annotations.NotNull;
 

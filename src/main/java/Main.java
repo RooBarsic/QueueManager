@@ -1,11 +1,11 @@
-import exampler.console.ConsoleQueue;
-import exampler.console.ControllerIO;
+import application.console.ConsoleQueue;
+import helpers.ControllerIO;
 
 import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
- * modified : 11.02.2020
+ * modified : 15.02.2020
  */
 public class Main {
 
