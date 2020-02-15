@@ -23,7 +23,7 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
     // and token
     // we can change them when we change new bot
     private static final String BOT_NAME = "Practice20_bot";
-    private static final String BOT_TOKEN = "1094016407:AAFkxUA_TJ6wYUXjm-9GLvkbXHYr8FSE96Q";
+    private static final String BOT_TOKEN = "xxxxxxxx";
 
     private final AnonymousService mAnonymouses;
 
