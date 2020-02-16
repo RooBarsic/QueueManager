@@ -1,5 +1,6 @@
-package exampler.console;
+package logic.queue;
 
+import helpers.ControllerIO;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,23 +12,23 @@ import java.util.Map;
 /**
  * Вспомогательный класс для работы с множеством очередей
  * Author: Farrukh Karimov
- * Modification Date: 13.02.2020
+ * Modification Date: 15.02.2020
  */
-public class MultiQueueController {
+public class QueuesBox<T> {
     private final ControllerIO controllerIO;
-    private final Map<String, SingleQueueController> queueControllerByName = new HashMap<>();
+    private final Map<String, EngineeredQueue<T>> queueByName = new HashMap<>();
 
-    public MultiQueueController(@NotNull final ControllerIO controllerIO) {
+    public QueuesBox(@NotNull final ControllerIO controllerIO){
         this.controllerIO = controllerIO;
     }
 
     /**
      * Метод для проверки существования очереди
      * @param queueName получает на вход имя очереди
-     * @return возвращет true если очередь с таким именем существует
+     * @return возвращет true если очередь с таким именем существует, иначе возвращает false
      */
     public boolean queueExist(@NotNull final String queueName){
-        if(!queueControllerByName.containsKey(queueName)){
+        if(!queueByName.containsKey(queueName)){
             controllerIO.printErrorMessage("queue " + queueName + " not exist");
             return false;
         }
@@ -37,26 +38,26 @@ public class MultiQueueController {
     /**
      * Метод для добавления новой очереди
      * @param queueName получает на вход имя очереди
-     * @return возвращает false если очередь с таким именем уже существует
+     * @return возвращает false если очередь с таким именем уже существует, иначе возвращает true
      */
     public boolean addQueue(@NotNull final String queueName){
-        if(queueControllerByName.containsKey(queueName)) {
+        if(queueByName.containsKey(queueName)) {
             controllerIO.printErrorMessage("queue " + queueName + " already exist. ");
             return false;
         }
-        queueControllerByName.put(queueName, new SingleQueueController(queueName));
+        queueByName.put(queueName, new EngineeredQueue<T>(queueName));
         return true;
     }
 
     /**
      * Метод для получения очереди по имени
      * @param queueName получает на вход имя очереди
-     * @return возвращает null если такой очереди не существует
+     * @return возвращает null если такой очереди не существует, иначе возвращает эту очередь
      */
     @Nullable
-    public SingleQueueController getQueueController(@NotNull final String queueName){
+    public EngineeredQueue<T> getQueue(@NotNull final String queueName){
         return queueExist(queueName) ?
-                queueControllerByName.get(queueName) :
+                queueByName.get(queueName) :
                 null;
     }
 
@@ -65,14 +66,14 @@ public class MultiQueueController {
      * @param queueName получает на вход имя очереди
      */
     public void removeQueue(@NotNull final String queueName){
-        queueControllerByName.remove(queueName);
+        queueByName.remove(queueName);
     }
 
     /**
      * Метод для удаления всех очередей
      */
     public void removeAll(){
-        queueControllerByName.clear();
+        queueByName.clear();
     }
 
     /**
@@ -80,6 +81,20 @@ public class MultiQueueController {
      * @return возвращает список имён существующих очередей
      */
     public List<String> getQueuesNames(){
-        return new ArrayList<>(queueControllerByName.keySet());
+        return new ArrayList<>(queueByName.keySet());
+    }
+
+    /**
+     * @return возвращает количество элементов в QueuesBox
+     */
+    public int size(){
+        return queueByName.size();
+    }
+
+    /**
+     * @return возвращает содержимое QueuesBox
+     */
+    public List<EngineeredQueue<T>> values(){
+        return new ArrayList<>(queueByName.values());
     }
 }
