@@ -20,6 +20,7 @@ class Application {
 
         int serverPort = 8000;
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
+
         new Handler(server, multiQueueController);
 
 
