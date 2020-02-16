@@ -1,12 +1,6 @@
-import TGBot.AnonymizerBot;
 import com.sun.net.httpserver.HttpServer;
 import exampler.console.ControllerIO;
 import exampler.console.MultiQueueController;
-import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.meta.ApiContext;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,26 +23,26 @@ class Application {
         new Handler(server, multiQueueController);
 
 
-        try {
-
-            ApiContextInitializer.init();
-
-            TelegramBotsApi botsApi = new TelegramBotsApi();
-
-
-            DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
-
-            botOptions.setProxyHost(PROXY_HOST);
-            botOptions.setProxyPort(PROXY_PORT);
-            botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
-
-            System.out.println("Registering Anonymizer...");
-            botsApi.registerBot(new AnonymizerBot(botOptions, multiQueueController));
-
-            System.out.println("Anonymizer bot is ready for work!");
-
-        } catch (TelegramApiRequestException e) {
-            System.out.println("Error while initializing bot!");
-        }
+//        try {
+//
+//            ApiContextInitializer.init();
+//
+//            TelegramBotsApi botsApi = new TelegramBotsApi();
+//
+//
+//            DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
+//
+//            botOptions.setProxyHost(PROXY_HOST);
+//            botOptions.setProxyPort(PROXY_PORT);
+//            botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
+//
+//            System.out.println("Registering Anonymizer...");
+//            botsApi.registerBot(new AnonymizerBot(botOptions, multiQueueController));
+//
+//            System.out.println("Anonymizer bot is ready for work!");
+//
+//        } catch (TelegramApiRequestException e) {
+//            System.out.println("Error while initializing bot!");
+//        }
     }
 }
