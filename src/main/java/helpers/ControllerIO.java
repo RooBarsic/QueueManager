@@ -1,8 +1,8 @@
-package exampler.console;
+package helpers;
 
 import java.util.Scanner;
 import org.jetbrains.annotations.NotNull;
-import queue.logic.Customer;
+import logic.customer.Customer;
 
 import java.io.PrintWriter;
 

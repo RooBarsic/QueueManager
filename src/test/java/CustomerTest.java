@@ -1,9 +1,12 @@
 import org.junit.Test;
-import queue.logic.Customer;
+import logic.customer.Customer;
 
 import static org.junit.Assert.assertEquals;
 
-
+/**
+ * Author: Farrukh Karimov
+ * Modification Date: 15.02.2020
+ */
 public class CustomerTest {
     private final String customerName = "Ali";
     private final String customerPhoneNumber = "+1234567890";
