@@ -29,7 +29,9 @@ public class QueuesBox<T> {
      */
     public boolean queueExist(@NotNull final String queueName){
         if(!queueByName.containsKey(queueName)){
+
             controllerIO.printErrorMessage("queue " + queueName + " not exist");
+
             return false;
         }
         return true;
@@ -63,10 +65,16 @@ public class QueuesBox<T> {
 
     /**
      * Метод для удаления очереди по имени
+     *
      * @param queueName получает на вход имя очереди
      */
-    public void removeQueue(@NotNull final String queueName){
-        queueByName.remove(queueName);
+    public Boolean removeQueue(@NotNull final String queueName) {
+
+        if (queueByName.containsKey(queueName)) {
+            queueByName.remove(queueName);
+            return true;
+        }
+        return false;
     }
 
     /**

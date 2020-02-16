@@ -1,8 +1,10 @@
+package handlers;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import exampler.console.MultiQueueController;
-import exampler.console.SingleQueueController;
-import queue.logic.Customer;
+import logic.customer.Customer;
+import logic.queue.EngineeredQueue;
+import logic.queue.QueuesBox;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,38 +13,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-public class Handler {
+public class CustomerHandler {
     HttpServer server;
 
 
-    public Handler(HttpServer server, MultiQueueController multiQueueController) {
+    public CustomerHandler(HttpServer server, QueuesBox queuesBox) {
         this.server = server;
-        server.createContext("/api/addNewQueue", (exchange -> {
-            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
 
-            multiQueueController.addQueue(x.get("queueName"));
-
-            String respText = "New queue " + x.get("queueName") + " has been created";
-            endResponse(exchange, respText);
-        }));
 
         server.createContext("/api/getAllQueues", (exchange -> {
             String respText = "";
-            for (String name : multiQueueController.getQueuesNames()) respText = respText.concat(name.concat("\n"));
+            if (!queuesBox.getQueuesNames().isEmpty()) {
+                for (Object name : queuesBox.getQueuesNames()) respText = respText.concat(name.toString().concat("\n"));
+            } else {
+                respText = "Empty...";
+            }
             endResponse(exchange, respText);
         }));
 
         server.createContext("/api/addToQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
 
-            SingleQueueController singleQueueController = multiQueueController.getQueueController(x.get("queueName"));
 
-            String respText;
+            String respText = "";
             try {
-                singleQueueController.addCustomer(new Customer(x.get("phoneNumber")));
-                respText = "Success";
+                if (x.get("queueName") != null) {
+
+
+                    EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+                    if (customerEngineeredQueue == null) throw new NullPointerException("No such queue");
+                    if (x.get("phoneNumber") != null) {
+                        customerEngineeredQueue.add(new Customer(x.get("phoneNumber")));
+                        respText = "Success";
+                    } else {
+                        throw new NullPointerException("You need to specify phone number");
+                    }
+                } else {
+                    throw new NullPointerException("You need to specify queue name");
+                }
+
             } catch (NullPointerException e) {
-                respText = "No such queue";
+                respText = e.getMessage();
             }
             endResponse(exchange, respText);
         }));
@@ -50,11 +61,11 @@ public class Handler {
         server.createContext("/api/deleteFromQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
 
-            SingleQueueController singleQueueController = multiQueueController.getQueueController(x.get("queueName"));
+            EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
 
             String respText;
             try {
-                singleQueueController.removeCustomer(new Customer(x.get("phoneNumber")));
+                customerEngineeredQueue.remove(new Customer(x.get("phoneNumber")));
                 respText = "Deleted";
             } catch (NullPointerException e) {
                 respText = "No such queue";
@@ -66,17 +77,24 @@ public class Handler {
         }));
         server.createContext("/api/getQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
-            SingleQueueController singleQueueController = multiQueueController.getQueueController(x.get("queueName"));
-            String respText;
+
+            EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+            String respText = "";
             try {
-                respText = singleQueueController.printQueue();
+
+                int i = 1;
+                for (Customer cs : customerEngineeredQueue.values()) {
+
+
+                    respText = respText + i + " " + cs.getPhoneNumber() + "\n";
+                    i++;
+                }
+
             } catch (NullPointerException e) {
                 respText = "No such queue";
             }
             endResponse(exchange, respText);
         }));
-        server.setExecutor(null); // creates a default executor
-        server.start();
     }
 
     public static void endResponse(HttpExchange exchange, String response) throws IOException {

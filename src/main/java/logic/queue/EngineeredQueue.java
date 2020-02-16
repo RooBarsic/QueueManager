@@ -38,6 +38,7 @@ public class EngineeredQueue<T> {
      * @return возвращает true если элемент успешно добавлен, false если такой елемент уже существует
      */
     public boolean add(@NotNull final T var){
+
         if(customersSet.add(var)){
             customersList.add(var);
             return true;

@@ -1,6 +1,8 @@
 import com.sun.net.httpserver.HttpServer;
-import exampler.console.ControllerIO;
-import exampler.console.MultiQueueController;
+import handlers.CustomerHandler;
+import handlers.QueueHandler;
+import helpers.ControllerIO;
+import logic.queue.QueuesBox;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,13 +17,16 @@ class Application {
     public static void main(String[] args) throws IOException {
 
 
-        MultiQueueController multiQueueController = new MultiQueueController(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
+        QueuesBox queuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
 
 
         int serverPort = 8000;
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
 
-        new Handler(server, multiQueueController);
+        new CustomerHandler(server, queuesBox);
+        new QueueHandler(server, queuesBox);
+        server.setExecutor(null); // creates a default executor
+        server.start();
 
 
 //        try {
@@ -38,7 +43,7 @@ class Application {
 //            botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
 //
 //            System.out.println("Registering Anonymizer...");
-//            botsApi.registerBot(new AnonymizerBot(botOptions, multiQueueController));
+//            botsApi.registerBot(new AnonymizerBot(botOptions, queuesBox));
 //
 //            System.out.println("Anonymizer bot is ready for work!");
 //
