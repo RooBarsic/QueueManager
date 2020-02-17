@@ -1,7 +1,6 @@
 package TGBot.Command;
 import TGBot.Model.Anonymous;
 import TGBot.Service.AnonymousService;
-import org.apache.logging.log4j.Level;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;

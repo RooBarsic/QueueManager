@@ -54,9 +54,6 @@ public final class SetNameCommand extends AnonymizerCommand {
             } else {
                 log.info("User {} has changed name to '{}'", user.getId(), displayedName);
                 sb.append("Your new displayed name: '").append(displayedName).append("'.");
-                if (displayedName.equals("Long2000")) sb.append("Long yeu Giang");
-                else if (displayedName.equals("Duc")) sb.append("Duc dep trai");
-                else if (displayedName.equals("QuangAnh")) sb.append("QuangAnh co don");
             }
         } else {
     //        log.log(Level.getLevel(LogLevel.STRANGE.getValue()), "User {} is trying to set taken name '{}'", user.getId(), displayedName);

@@ -1,4 +1,6 @@
 import TGBot.Bot.AnonymizerBot;
+import exampler.console.ControllerIO;
+import exampler.console.MultiQueueController;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -6,7 +8,11 @@ import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.ApiContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import org.telegram.telegrambots.meta.generics.LongPollingBot;
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 public final class BotInitializer {
 
@@ -15,11 +21,12 @@ public final class BotInitializer {
     private static final String PROXY_HOST = "80.211.29.222";
     private static final int PROXY_PORT = 8975;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
        /* System.getProperties().put("proxySet","true");
         System.getProperties().put("socksProxyHost","127.0.0.1");
         System.getProperties().put("socksProxyPort","9150");
         */
+        MultiQueueController multiQueueController = new MultiQueueController(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
         try {
 
             LOG.info("Initializing API context...");
@@ -35,7 +42,7 @@ public final class BotInitializer {
             botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
 
             LOG.info("Registering Anonymizer...");
-            botsApi.registerBot(new AnonymizerBot());
+            botsApi.registerBot(new AnonymizerBot(botOptions,multiQueueController));
 
 
             LOG.info("Bot is ready for work!");

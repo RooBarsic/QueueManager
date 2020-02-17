@@ -3,6 +3,7 @@ package TGBot.Bot;
 import TGBot.Command.*;
 import TGBot.Model.Anonymous;
 import TGBot.Service.AnonymousService;
+import exampler.console.MultiQueueController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -23,11 +24,11 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
     // and token
     // we can change them when we change new bot
     private static final String BOT_NAME = "Practice20_bot";
-    private static final String BOT_TOKEN = "xxxxxxxx";
+    private static final String BOT_TOKEN = "1094016407:AAFkxUA_TJ6wYUXjm-9GLvkbXHYr8FSE96Q";
 
     private final AnonymousService mAnonymouses;
 
-    public AnonymizerBot(/*DefaultBotOptions botOptions*/) {
+    public AnonymizerBot(DefaultBotOptions botOptions, MultiQueueController multiQueueController) {
 
         //super(botOptions, false);
 
@@ -47,9 +48,11 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
         LOG.info("Registering '/my_name'...");
         register(new MyNameCommand(mAnonymouses));
         LOG.info("registering '/join_queue'...");
-        register(new JoinQueueCommand(mAnonymouses));
-        LOG.info("registering '/list_queue'...");
-        register(new CheckQueueCommand(mAnonymouses));
+        register(new JoinQueueCommand(mAnonymouses,multiQueueController));
+        LOG.info("registering '/show_all_queues'...");
+        register(new ShowAllQueuesCommand(mAnonymouses,multiQueueController));
+        LOG.info("registering '/check_queue'...");
+        register(new ShowAllQueuesCommand(mAnonymouses,multiQueueController));
         HelpCommand helpCommand = new HelpCommand(this);
         LOG.info("Registering '/help'...");
         register(helpCommand);

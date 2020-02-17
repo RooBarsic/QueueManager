@@ -55,12 +55,4 @@ public final class AnonymousService {
     private boolean isDisplayedNameTaken(String name) {
         return mAnonymouses.stream().anyMatch(a -> Objects.equals(a.getDisplayedName(), name));
     }
-    /**
-    This method returns information of Queue,
-     @param nameQueue name of Queue
-     */
-    private String getDisplayedQueue(String nameQueue){
-        //TODO
-        return null;
-    }
 }

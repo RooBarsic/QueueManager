@@ -72,4 +72,8 @@ public class SingleQueueController {
     public String getControllerName(){
         return controllerName;
     }
+
+    public String printQueue(){
+        return "There are " + queueSize() + " users before you";
+    }
 }

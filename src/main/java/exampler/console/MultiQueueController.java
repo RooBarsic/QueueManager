@@ -17,7 +17,7 @@ public class MultiQueueController {
     private final ControllerIO controllerIO;
     private final Map<String, SingleQueueController> queueControllerByName = new HashMap<>();
 
-    MultiQueueController(@NotNull final ControllerIO controllerIO){
+    public MultiQueueController(@NotNull final ControllerIO controllerIO){
         this.controllerIO = controllerIO;
     }
 
