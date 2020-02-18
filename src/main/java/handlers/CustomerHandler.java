@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 public class CustomerHandler {
     HttpServer server;
@@ -36,41 +35,47 @@ public class CustomerHandler {
 
 
             String respText = "";
-            try {
-                if (x.get("queueName") != null) {
+                if (x.get("queueName") == null) {
+                    respText = "You need to specify queue name";
+                } else {
 
 
                     EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
-                    if (customerEngineeredQueue == null) throw new NullPointerException("No such queue");
-                    if (x.get("phoneNumber") != null) {
-                        customerEngineeredQueue.add(new Customer(x.get("phoneNumber")));
-                        respText = "Success";
+
+
+                    if (customerEngineeredQueue == null) {
+                        respText = "No such queue";
                     } else {
-                        throw new NullPointerException("You need to specify phone number");
+
+                        if (x.get("phoneNumber") == null) {
+                            respText = "You need to specify phone number";
+
+                        } else {
+                            customerEngineeredQueue.add(new Customer(x.get("phoneNumber")));
+                            respText = "Success";
+
+                        }
                     }
-                } else {
-                    throw new NullPointerException("You need to specify queue name");
                 }
 
-            } catch (NullPointerException e) {
-                respText = e.getMessage();
-            }
             endResponse(exchange, respText);
         }));
 
         server.createContext("/api/deleteFromQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
-
-            EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
-
             String respText;
-            try {
-                customerEngineeredQueue.remove(new Customer(x.get("phoneNumber")));
-                respText = "Deleted";
-            } catch (NullPointerException e) {
-                respText = "No such queue";
-            } catch (NoSuchElementException e) {
-                respText = e.getMessage();
+            if (x.get("queueName") == null) {
+                respText = "You need to specify queue name";
+            } else {
+                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+                if (customerEngineeredQueue == null) {
+                    respText = "No such queue";
+                } else {
+
+                    customerEngineeredQueue.remove(new Customer(x.get("phoneNumber")));
+                    respText = "Deleted";
+
+                }
             }
             endResponse(exchange, respText);
 
@@ -80,7 +85,10 @@ public class CustomerHandler {
 
             EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
             String respText = "";
-            try {
+
+            if (customerEngineeredQueue == null) {
+                respText = "No such queue";
+            } else {
 
                 int i = 1;
                 for (Customer cs : customerEngineeredQueue.values()) {
@@ -90,8 +98,6 @@ public class CustomerHandler {
                     i++;
                 }
 
-            } catch (NullPointerException e) {
-                respText = "No such queue";
             }
             endResponse(exchange, respText);
         }));
