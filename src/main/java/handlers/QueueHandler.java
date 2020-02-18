@@ -62,7 +62,6 @@ public class QueueHandler {
 
     public static Map<String, String> splitQuery(String query) {
         Map<String, String> params = new HashMap<>();
-        System.out.println(query);
         if (query == null || "".equals(query)) {
             return Collections.emptyMap();
         }

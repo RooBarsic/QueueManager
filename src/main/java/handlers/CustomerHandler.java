@@ -51,8 +51,10 @@ public class CustomerHandler {
                             respText = "You need to specify phone number";
 
                         } else {
-                            customerEngineeredQueue.add(new Customer(x.get("phoneNumber")));
-                            respText = "Success";
+
+                            if (customerEngineeredQueue.add(new Customer(x.get("phoneNumber")))) respText = "Success";
+                            else
+                                respText = "There is another customer with this phone number";
 
                         }
                     }
@@ -72,9 +74,13 @@ public class CustomerHandler {
                     respText = "No such queue";
                 } else {
 
-                    customerEngineeredQueue.remove(new Customer(x.get("phoneNumber")));
-                    respText = "Deleted";
+                    if (x.get("phoneNumber") == null) {
+                        respText = "You need to specify phone number";
+                    } else {
 
+                        customerEngineeredQueue.remove(new Customer(x.get("phoneNumber")));
+                        respText = "Deleted";
+                    }
                 }
             }
             endResponse(exchange, respText);
@@ -82,22 +88,30 @@ public class CustomerHandler {
         }));
         server.createContext("/api/getQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
-
-            EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
             String respText = "";
+            if (x.get("queueName") == null) {
 
-            if (customerEngineeredQueue == null) {
-                respText = "No such queue";
+                respText = "You need to specify queue name";
             } else {
 
-                int i = 1;
-                for (Customer cs : customerEngineeredQueue.values()) {
+
+                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
 
 
-                    respText = respText + i + " " + cs.getPhoneNumber() + "\n";
-                    i++;
+                if (customerEngineeredQueue == null) {
+                    respText = "No such queue";
+                } else {
+
+                    int i = 1;
+                    for (Customer cs : customerEngineeredQueue.values()) {
+
+
+                        respText = respText + cs.getPhoneNumber() + "\n";
+                        i++;
+                    }
+
+
                 }
-
             }
             endResponse(exchange, respText);
         }));
@@ -117,7 +131,7 @@ public class CustomerHandler {
 
     public static Map<String, String> splitQuery(String query) {
         Map<String, String> params = new HashMap<>();
-        System.out.println(query);
+
         if (query == null || "".equals(query)) {
             return Collections.emptyMap();
         }

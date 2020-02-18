@@ -8,15 +8,13 @@ import java.io.UnsupportedEncodingException;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 
-public class RestTest {
-    Application app;
+public class RestQueueTest {
+    Application app = new Application();
 
     @Before
     public void setup() throws IOException {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8000;
-
-        app = new Application();
         Application.main(new String[0]);
 
     }
@@ -41,4 +39,15 @@ public class RestTest {
         RestAssured.get("/api/addNewQueue?queueName=Ilia").then().statusCode(200).assertThat()
                 .body("", hasItem("Queue Ilia already exist."));
     }
+
+    @Test
+    public void tryingToDeleteQueue() throws UnsupportedEncodingException {
+        RestAssured.get("/api/addNewQueue?queueName=Ilia");
+        RestAssured.get("/api/deleteQueue?queueName=Ilia").then().statusCode(200).assertThat()
+                .body("", hasItem("Queue Ilia deleted"));
+        RestAssured.get("/api/deleteQueue?queueName=Ilia").then().statusCode(200).assertThat()
+                .body("", hasItem("Queue Ilia does not exist."));
+    }
+
+
 }
