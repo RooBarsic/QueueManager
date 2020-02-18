@@ -49,12 +49,15 @@ public class QueueHandler {
     }
 
     public static void endResponse(HttpExchange exchange, String response) throws IOException {
+        String encoding = "UTF-8";
+
+        exchange.getResponseHeaders().set("Content-Type", "text/html; charset=" + encoding);
+
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream output = exchange.getResponseBody();
         output.write(response.getBytes());
         output.flush();
         exchange.close();
-
     }
 
     public static Map<String, String> splitQuery(String query) {

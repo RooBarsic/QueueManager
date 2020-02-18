@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 
 class Application {
+    private static HttpServer server;
+
     private static final String PROXY_HOST = "80.211.29.222";
     private static final int PROXY_PORT = 8975;
 
@@ -21,7 +23,7 @@ class Application {
 
 
         int serverPort = 8000;
-        HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
+        server = HttpServer.create(new InetSocketAddress(serverPort), 0);
 
         new CustomerHandler(server, queuesBox);
         new QueueHandler(server, queuesBox);
@@ -50,5 +52,9 @@ class Application {
 //        } catch (TelegramApiRequestException e) {
 //            System.out.println("Error while initializing bot!");
 //        }
+    }
+
+    public HttpServer getServer() {
+        return server;
     }
 }
