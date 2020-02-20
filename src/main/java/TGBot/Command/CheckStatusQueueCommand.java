@@ -1,7 +1,7 @@
 package TGBot.Command;
 
 import TGBot.Service.AnonymousService;
-import exampler.console.MultiQueueController;
+import logic.queue.QueuesBox;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -12,12 +12,12 @@ import java.util.List;
 public class CheckStatusQueueCommand extends AnonymizerCommand {
 
     private final AnonymousService mAnonymouses;
-    private MultiQueueController multiQueueController;
+    private QueuesBox QueuesBox;
 
-    public CheckStatusQueueCommand(AnonymousService anonymouses, MultiQueueController multiQueueController) {
+    public CheckStatusQueueCommand(AnonymousService anonymouses, QueuesBox QueuesBox) {
         super("check_queue", "Show the queue of given name\n");
         mAnonymouses = anonymouses;
-        this.multiQueueController = multiQueueController;
+        this.QueuesBox = QueuesBox;
     }
 
     @Override
@@ -33,8 +33,8 @@ public class CheckStatusQueueCommand extends AnonymizerCommand {
         }else {
             String nameQueue = getNameQueue(strings);
             if (nameQueue==null) sb.append("Please insert name of queue, which you want to check");
-            else if (!multiQueueController.queueExist(nameQueue)) sb.append("The given name does not match any queue");
-            else sb.append(multiQueueController.getQueueController(nameQueue).printQueue());
+            else if (!QueuesBox.queueExist(nameQueue)) sb.append("The given name does not match any queue");
+            else sb.append(QueuesBox.getQueue(nameQueue).values().toString());
         }
         message.setText(sb.toString());
         execute(absSender, message, user);

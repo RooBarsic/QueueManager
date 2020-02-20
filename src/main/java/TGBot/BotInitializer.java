@@ -1,6 +1,8 @@
+package TGBot;
 import TGBot.Bot.AnonymizerBot;
-import exampler.console.ControllerIO;
-import exampler.console.MultiQueueController;
+import com.google.common.base.Strings;
+import helpers.ControllerIO;
+import logic.queue.QueuesBox;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -9,24 +11,26 @@ import org.telegram.telegrambots.meta.ApiContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public final class BotInitializer {
+public class BotInitializer {
 
     private static final Logger LOG = LogManager.getLogger(BotInitializer.class);
 
     private static final String PROXY_HOST = "80.211.29.222";
     private static final int PROXY_PORT = 8975;
+    private QueuesBox queuesBox;
+    public BotInitializer(QueuesBox queuesBox){
+        this.queuesBox = queuesBox;
+    }
 
-    public static void main(String[] args) {
-        System.getProperties().put("proxySet","true");
+    public void run() {
+  /*      System.getProperties().put("proxySet","true");
         System.getProperties().put("socksProxyHost","127.0.0.1");
         System.getProperties().put("socksProxyPort","9150");
 
-        MultiQueueController multiQueueController = new MultiQueueController(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
+        QueuesBox QueuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));*/
         try {
 
             LOG.info("Initializing API context...");
@@ -42,7 +46,7 @@ public final class BotInitializer {
             botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
 
             LOG.info("Registering Anonymizer...");
-            botsApi.registerBot(new AnonymizerBot(/*botOptions,*/multiQueueController));
+            botsApi.registerBot(new AnonymizerBot(/*botOptions,*/queuesBox));
 
 
             LOG.info("Bot is ready for work!");

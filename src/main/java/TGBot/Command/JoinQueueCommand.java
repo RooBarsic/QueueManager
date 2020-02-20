@@ -1,30 +1,29 @@
 package TGBot.Command;
 
 import TGBot.Service.AnonymousService;
-import exampler.console.MultiQueueController;
+import logic.customer.Customer;
+import logic.queue.QueuesBox;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import queue.logic.Customer;
 
 import java.util.List;
 
 public class JoinQueueCommand extends AnonymizerCommand {
 
     private final AnonymousService mAnonymouses;
-    private MultiQueueController multiQueueController;
+    private QueuesBox QueuesBox;
 
-    public JoinQueueCommand(AnonymousService anonymouses,MultiQueueController multiQueueController){
+    public JoinQueueCommand(AnonymousService anonymouses,QueuesBox QueuesBox){
         super("join_queue","Register your information into the queue\n Format : /join_queue [name of queue] [your name] [your numberphone] ");
         mAnonymouses = anonymouses;
-        this.multiQueueController = multiQueueController;
-
+        this.QueuesBox = QueuesBox;
     }
 
     // format of strings : [name of queue] [user's name] [phone]
     @Override
-    public void execute(AbsSender absSender, User user, Chat chat, String[] strings){
+    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
         StringBuilder sb = new StringBuilder();
         SendMessage message = new SendMessage();
         message.setChatId(chat.getId().toString());
@@ -45,9 +44,9 @@ public class JoinQueueCommand extends AnonymizerCommand {
             else if (numberPhone==null) sb.append("Please correct your number phone!");
             else {
                 customer = new Customer(nameUser, numberPhone);
-                multiQueueController.getQueueController(nameQueue).addCustomer(customer);
-                sb.append("You are added to the queue. Your position is ")
-                        .append(multiQueueController.getQueueController(nameQueue).getCustomerPosition(customer))
+                QueuesBox.getQueue(nameQueue).add(customer);
+                sb.append(nameUser + " was added to the queue. Your position is ")
+                        .append(QueuesBox.getQueue(nameQueue).findIndex(customer))
                         .append(" ! ");
             }
         }
@@ -97,7 +96,7 @@ public class JoinQueueCommand extends AnonymizerCommand {
      * @return name of queue if it exists, otherwise null
      */
     private String checkNameQueue(String nameQueue){
-        if (!multiQueueController.queueExist(nameQueue)) return null;
+        if (!QueuesBox.queueExist(nameQueue)) return null;
         return nameQueue;
     }
 }

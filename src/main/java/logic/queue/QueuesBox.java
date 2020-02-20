@@ -18,11 +18,8 @@ public class QueuesBox<T> {
     private final ControllerIO controllerIO;
     private final Map<String, EngineeredQueue<T>> queueByName = new HashMap<>();
 
-<<<<<<< HEAD:src/main/java/exampler/console/MultiQueueController.java
-    public MultiQueueController(@NotNull final ControllerIO controllerIO){
-=======
     public QueuesBox(@NotNull final ControllerIO controllerIO){
->>>>>>> 7c28fc6c70c5eaead353fc38ee0fc5da6ad9ed5d:src/main/java/logic/queue/QueuesBox.java
+
         this.controllerIO = controllerIO;
     }
 
@@ -52,6 +49,7 @@ public class QueuesBox<T> {
             return false;
         }
         queueByName.put(queueName, new EngineeredQueue<T>(queueName));
+        System.out.println("Success add queue" + queueName);
         return true;
     }
 

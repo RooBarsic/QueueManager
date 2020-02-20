@@ -3,7 +3,7 @@ package TGBot.Bot;
 import TGBot.Command.*;
 import TGBot.Model.Anonymous;
 import TGBot.Service.AnonymousService;
-import exampler.console.MultiQueueController;
+import logic.queue.QueuesBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -28,7 +28,7 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
 
     private final AnonymousService mAnonymouses;
 
-    public AnonymizerBot(/*DefaultBotOptions botOptions,*/ MultiQueueController multiQueueController) {
+    public AnonymizerBot(/*DefaultBotOptions botOptions, */QueuesBox QueuesBox) {
 
         //super(botOptions, false);
 
@@ -48,11 +48,11 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
         LOG.info("Registering '/my_name'...");
         register(new MyNameCommand(mAnonymouses));
         LOG.info("registering '/join_queue'...");
-        register(new JoinQueueCommand(mAnonymouses,multiQueueController));
+        register(new JoinQueueCommand(mAnonymouses,QueuesBox));
         LOG.info("registering '/show_all_queues'...");
-        register(new ShowAllQueuesCommand(mAnonymouses,multiQueueController));
+        register(new ShowAllQueuesCommand(mAnonymouses,QueuesBox));
         LOG.info("registering '/check_queue'...");
-        register(new ShowAllQueuesCommand(mAnonymouses,multiQueueController));
+        register(new ShowAllQueuesCommand(mAnonymouses,QueuesBox));
         HelpCommand helpCommand = new HelpCommand(this);
         LOG.info("Registering '/help'...");
         register(helpCommand);

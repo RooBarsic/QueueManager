@@ -6,8 +6,6 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
-import javax.xml.bind.SchemaOutputResolver;
-
 public final class SetNameCommand extends AnonymizerCommand {
 
     private final AnonymousService mAnonymouses;

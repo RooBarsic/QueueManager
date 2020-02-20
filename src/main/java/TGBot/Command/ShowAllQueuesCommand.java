@@ -1,7 +1,7 @@
 package TGBot.Command;
 
 import TGBot.Service.AnonymousService;
-import exampler.console.MultiQueueController;
+import logic.queue.QueuesBox;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -12,12 +12,12 @@ import java.util.List;
 public class ShowAllQueuesCommand extends AnonymizerCommand {
 
     private final AnonymousService mAnonymouses;
-    private MultiQueueController multiQueueController;
+    private QueuesBox QueuesBox;
 
-    public ShowAllQueuesCommand(AnonymousService anonymouses, MultiQueueController multiQueueController){
+    public ShowAllQueuesCommand(AnonymousService anonymouses, QueuesBox QueuesBox){
         super("show_all_queues","Show all available queues\n");
         mAnonymouses = anonymouses;
-        this.multiQueueController = multiQueueController;
+        this.QueuesBox = QueuesBox;
     }
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
@@ -30,7 +30,7 @@ public class ShowAllQueuesCommand extends AnonymizerCommand {
         }else if (mAnonymouses.getDisplayedName(user) == null) {
             sb.append("Currently you don't have a name.\nSet it using command: /set_name ");
         }else {
-            List<String> queues = multiQueueController.getQueuesNames();
+            List<String> queues = QueuesBox.getQueuesNames();
             for(int i=0;i<queues.size();i++){
                 sb.append(queues.get(i));
                 sb.append("\n");
