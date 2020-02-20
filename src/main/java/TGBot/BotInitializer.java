@@ -21,11 +21,11 @@ public final class BotInitializer {
     private static final String PROXY_HOST = "80.211.29.222";
     private static final int PROXY_PORT = 8975;
 
-    public static void main(String[] args) throws IOException {
-       /* System.getProperties().put("proxySet","true");
+    public static void main(String[] args) {
+        System.getProperties().put("proxySet","true");
         System.getProperties().put("socksProxyHost","127.0.0.1");
         System.getProperties().put("socksProxyPort","9150");
-        */
+
         MultiQueueController multiQueueController = new MultiQueueController(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
         try {
 
@@ -42,7 +42,7 @@ public final class BotInitializer {
             botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
 
             LOG.info("Registering Anonymizer...");
-            botsApi.registerBot(new AnonymizerBot(botOptions,multiQueueController));
+            botsApi.registerBot(new AnonymizerBot(/*botOptions,*/multiQueueController));
 
 
             LOG.info("Bot is ready for work!");

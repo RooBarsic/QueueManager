@@ -1,6 +1,10 @@
-package exampler.console;
+package application.console;
 
+import helpers.ControllerIO;
+import logic.customer.Customer;
+import logic.queue.QueuesBox;
 import org.jetbrains.annotations.NotNull;
+
 
 /**
  * Console application demo
@@ -10,21 +14,21 @@ import org.jetbrains.annotations.NotNull;
 public class ConsoleQueue {
     private final ControllerIO controllerIO;
     private final String availableCommands;
-    private final MultiQueueController multiQueueController;
+    private final QueuesBox<Customer> queueBox;
 
     public ConsoleQueue(@NotNull final ControllerIO controllerIO){
         this.controllerIO = controllerIO;
-        this.multiQueueController = new MultiQueueController(controllerIO);
+        this.queueBox = new QueuesBox<Customer>(controllerIO);
         availableCommands = "\nadd-queue [queueName] \n" +
-                            "clean-queue [queueName] \n" +
-                            "remove-queue [queueName] \n" +
-                            "queue-names-list \n" +
-                            "queue-size [queueName] \n" +
-                            "add-customer [queueName; customerPhoneNumber; customerName or '-' ] \n" +
-                            "remove-customer [queueName; customerPhoneNumber; customerName or '-' ] \n" +
-                            "customer-position [queueName; customerPhoneNumber; customerName or '-' ] \n" +
-                            "help \n" +
-                            "exit";
+                "clean-queue [queueName] \n" +
+                "remove-queue [queueName] \n" +
+                "queue-names-list \n" +
+                "queue-size [queueName] \n" +
+                "add-customer [queueName; customerPhoneNumber; customerName or '-' ] \n" +
+                "remove-customer [queueName; customerPhoneNumber; customerName or '-' ] \n" +
+                "customer-position [queueName; customerPhoneNumber; customerName or '-' ] \n" +
+                "help \n" +
+                "exit";
     }
 
     /**
@@ -34,7 +38,7 @@ public class ConsoleQueue {
      */
     public boolean runQueueDemo(){
         try {
-            multiQueueController.removeAll();
+            queueBox.removeAll();
 
             controllerIO.printMessage(" Please write one of following commands : ");
             controllerIO.printMessage(getAvailableCommandsInfo());
@@ -45,33 +49,31 @@ public class ConsoleQueue {
                 final String queueName;
                 switch (command) {
                     case "add-queue":
-                        multiQueueController.addQueue(
+                        queueBox.addQueue(
                                 controllerIO.getField("queue name")
                         );
                         break;
                     case "clean-queue":
-                        multiQueueController
-                                .getQueueController(controllerIO.getField("queue name"))
-                                .cleanQueue();
+                        queueBox.getQueue(
+                                controllerIO.getField("queue name")
+                        ).clear();
                         break;
                     case "remove-queue":
-                        multiQueueController.removeQueue(
+                        queueBox.removeQueue(
                                 controllerIO.getField("queue name")
                         );
                         break;
                     case "queue-names-list":
-                        multiQueueController
-                                .getQueuesNames()
+                        queueBox.getQueuesNames()
                                 .forEach(controllerIO::printMessage);
                         break;
                     case "queue-size":
                         queueName = controllerIO.getField("queue name");
-                        if(multiQueueController.queueExist(queueName)){
+                        if(queueBox.queueExist(queueName)){
                             controllerIO.printMessage(
                                     Integer.toString(
-                                            multiQueueController
-                                                    .getQueueController(queueName)
-                                                    .queueSize()
+                                            queueBox.getQueue(queueName)
+                                                    .size()
                                     )
                             );
                         }
@@ -80,28 +82,25 @@ public class ConsoleQueue {
                         queueName = controllerIO.getField("queue name");
                         controllerIO.printMessage(
                                 Integer.toString(
-                                        multiQueueController.queueExist(queueName) ?
-                                                multiQueueController
-                                                        .getQueueController(queueName)
-                                                        .getCustomerPosition(controllerIO.getCustomer())
+                                        queueBox.queueExist(queueName) ?
+                                                queueBox.getQueue(queueName)
+                                                        .findIndex(controllerIO.getCustomer())
                                                 : -1
                                 )
                         );
                         break;
                     case "add-customer":
                         queueName = controllerIO.getField("queue name");
-                        if(multiQueueController.queueExist(queueName)){
-                            multiQueueController
-                                .getQueueController(queueName)
-                                .addCustomer(controllerIO.getCustomer());
+                        if(queueBox.queueExist(queueName)){
+                            queueBox.getQueue(queueName)
+                                    .add(controllerIO.getCustomer());
                         }
                         break;
                     case "remove-customer":
                         queueName = controllerIO.getField("queue name");
-                        if(multiQueueController.queueExist(queueName)){
-                            multiQueueController
-                                .getQueueController(queueName)
-                                .removeCustomer(controllerIO.getCustomer());
+                        if(queueBox.queueExist(queueName)){
+                            queueBox.getQueue(queueName)
+                                    .remove(controllerIO.getCustomer());
                         }
                         break;
                     case "help":

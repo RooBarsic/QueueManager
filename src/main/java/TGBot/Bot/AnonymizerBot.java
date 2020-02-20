@@ -28,7 +28,7 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
 
     private final AnonymousService mAnonymouses;
 
-    public AnonymizerBot(DefaultBotOptions botOptions, MultiQueueController multiQueueController) {
+    public AnonymizerBot(/*DefaultBotOptions botOptions,*/ MultiQueueController multiQueueController) {
 
         //super(botOptions, false);
 
