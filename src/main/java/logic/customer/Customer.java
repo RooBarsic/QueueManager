@@ -50,4 +50,12 @@ public class Customer {
     public int hashCode() {
         return getPhoneNumber().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
 }
