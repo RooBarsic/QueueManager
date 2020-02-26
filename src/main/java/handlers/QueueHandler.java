@@ -27,8 +27,6 @@ public class QueueHandler {
             } else {
                 respText = "Queue " + x.get("queueName") + " already exist.";
             }
-
-
             endResponse(exchange, respText);
         }));
 
@@ -44,8 +42,6 @@ public class QueueHandler {
 
             endResponse(exchange, respText);
         }));
-
-
     }
 
     public static void endResponse(HttpExchange exchange, String response) throws IOException {
@@ -55,7 +51,9 @@ public class QueueHandler {
 
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream output = exchange.getResponseBody();
+
         output.write(response.getBytes());
+
         output.flush();
         exchange.close();
     }

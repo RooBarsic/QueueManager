@@ -19,7 +19,9 @@ class Application {
         queuesBox.addQueue("sberbank");
 
         new Thread(() -> {
-            BotInitializer botInitializer = new BotInitializer(queuesBox);
+            //RE-write bot for using rest, not queuesBox.
+            //TODO
+            BotInitializer botInitializer = new BotInitializer();
             botInitializer.run();
 
         }).start();
@@ -32,6 +34,7 @@ class Application {
                     new QueueHandler(server, queuesBox);
                     server.setExecutor(null); // creates a default executor
                     server.start();
+
                 }
                 catch (IOException e){
                     e.printStackTrace();

@@ -28,7 +28,7 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
 
     private final AnonymousService mAnonymouses;
 
-    public AnonymizerBot(/*DefaultBotOptions botOptions, */QueuesBox QueuesBox) {
+    public AnonymizerBot(DefaultBotOptions botOptions) {
 
         //super(botOptions, false);
 
@@ -48,11 +48,11 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
         LOG.info("Registering '/my_name'...");
         register(new MyNameCommand(mAnonymouses));
         LOG.info("registering '/join_queue'...");
-        register(new JoinQueueCommand(mAnonymouses,QueuesBox));
+        register(new JoinQueueCommand(mAnonymouses));
         LOG.info("registering '/show_all_queues'...");
-        register(new ShowAllQueuesCommand(mAnonymouses,QueuesBox));
+        register(new ShowAllQueuesCommand(mAnonymouses));
         LOG.info("registering '/check_queue'...");
-        register(new ShowAllQueuesCommand(mAnonymouses,QueuesBox));
+        register(new CheckStatusQueueCommand(mAnonymouses));
         HelpCommand helpCommand = new HelpCommand(this);
         LOG.info("Registering '/help'...");
         register(helpCommand);

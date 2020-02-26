@@ -39,9 +39,7 @@ public class CustomerHandler {
                     respText = "You need to specify queue name";
                 } else {
 
-
                     EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
-
 
                     if (customerEngineeredQueue == null) {
                         respText = "No such queue";
@@ -94,18 +92,15 @@ public class CustomerHandler {
                 respText = "You need to specify queue name";
             } else {
 
-
                 EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
-
 
                 if (customerEngineeredQueue == null) {
                     respText = "No such queue";
-                } else {
+                } else if (customerEngineeredQueue.size()==0) respText="There is nobody in this queue";
+                else {
 
                     int i = 1;
                     for (Customer cs : customerEngineeredQueue.values()) {
-
-
                         respText = respText + cs.getPhoneNumber() + "\n";
                         i++;
                     }

@@ -1,7 +1,6 @@
 package TGBot.Command;
 
 import TGBot.Service.AnonymousService;
-import logic.queue.QueuesBox;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -12,16 +11,14 @@ import java.util.List;
 public class CheckStatusQueueCommand extends AnonymizerCommand {
 
     private final AnonymousService mAnonymouses;
-    private QueuesBox QueuesBox;
 
-    public CheckStatusQueueCommand(AnonymousService anonymouses, QueuesBox QueuesBox) {
+    public CheckStatusQueueCommand(AnonymousService anonymouses) {
         super("check_queue", "Show the queue of given name\n");
         mAnonymouses = anonymouses;
-        this.QueuesBox = QueuesBox;
     }
 
     @Override
-    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) throws NullPointerException{
+    public void execute(AbsSender absSender, User user, Chat chat, String[] strings){
         StringBuilder sb = new StringBuilder();
         SendMessage message = new SendMessage();
         message.setChatId(chat.getId().toString());
@@ -31,11 +28,16 @@ public class CheckStatusQueueCommand extends AnonymizerCommand {
         }else if (mAnonymouses.getDisplayedName(user) == null) {
             sb.append("Currently you don't have a name.\nSet it using command: /set_name ");
         }else {
-            String nameQueue = getNameQueue(strings);
-            if (nameQueue==null) sb.append("Please insert name of queue, which you want to check");
-            else if (!QueuesBox.queueExist(nameQueue)) sb.append("The given name does not match any queue");
-            else sb.append(QueuesBox.getQueue(nameQueue).values().toString());
+            if (strings[0]==null) sb.append("Please insert name of queue, which you want to check");
+            else {
+                String nameQueue = strings[0];
+               // System.out.println(nameQueue);
+                String url = "http://localhost:8000/api/getQueue?queueName=" + nameQueue;
+                //http://localhost:8000/api/getQueue?queueName=sberbank
+                sb.append(getResponeToBot(url));
+            }
         }
+
         message.setText(sb.toString());
         execute(absSender, message, user);
 

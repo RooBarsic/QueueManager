@@ -20,17 +20,14 @@ public class BotInitializer {
 
     private static final String PROXY_HOST = "80.211.29.222";
     private static final int PROXY_PORT = 8975;
-    private QueuesBox queuesBox;
-    public BotInitializer(QueuesBox queuesBox){
-        this.queuesBox = queuesBox;
-    }
+
 
     public void run() {
-  /*      System.getProperties().put("proxySet","true");
+       /* System.getProperties().put("proxySet","true");
         System.getProperties().put("socksProxyHost","127.0.0.1");
         System.getProperties().put("socksProxyPort","9150");
-
-        QueuesBox QueuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));*/
+*/
+        //QueuesBox QueuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
         try {
 
             LOG.info("Initializing API context...");
@@ -46,7 +43,7 @@ public class BotInitializer {
             botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
 
             LOG.info("Registering Anonymizer...");
-            botsApi.registerBot(new AnonymizerBot(/*botOptions,*/queuesBox));
+            botsApi.registerBot(new AnonymizerBot(botOptions));
 
 
             LOG.info("Bot is ready for work!");
