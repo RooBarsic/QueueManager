@@ -16,15 +16,17 @@ class Application {
     public static void main(String[] args) {
 
         QueuesBox queuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
-        queuesBox.addQueue("sberbank");
+        //queuesBox.addQueue("sberbank");
+
 
         new Thread(() -> {
-            //RE-write bot for using rest, not queuesBox.
-            //TODO
+            //TODO : add GetMyPositionCommand, deleteFromQueueCommand
             BotInitializer botInitializer = new BotInitializer();
             botInitializer.run();
 
         }).start();
+
+
 
         new Thread(()-> {
                 try{
@@ -40,6 +42,8 @@ class Application {
                     e.printStackTrace();
                 }
         }).start();
+
+
 
     }
 

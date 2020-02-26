@@ -31,6 +31,7 @@ public class CustomerHandler {
         }));
 
         server.createContext("/api/addToQueue", (exchange -> {
+            //TODO need to name of customer, not only phone
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
 
 
@@ -61,6 +62,7 @@ public class CustomerHandler {
             endResponse(exchange, respText);
         }));
 
+
         server.createContext("/api/deleteFromQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
             String respText;
@@ -84,7 +86,9 @@ public class CustomerHandler {
             endResponse(exchange, respText);
 
         }));
+
         server.createContext("/api/getQueue", (exchange -> {
+            //TODO change to getPosition
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
             String respText = "";
             if (x.get("queueName") == null) {
