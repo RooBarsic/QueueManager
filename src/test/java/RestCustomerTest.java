@@ -98,5 +98,22 @@ public class RestCustomerTest {
 
     }
 
+    @Test
+    public void tryingToGetPosition() throws UnsupportedEncodingException {
+
+        RestAssured.post("/api/addNewQueue?queueName=Ilia");
+        RestAssured.post("/api/addToQueue?queueName=Ilia&phoneNumber=8012");
+        RestAssured.get("/api/getIndex?queueName=Ilia&phoneNumber=8012").then().statusCode(200).assertThat()
+                .body("", hasItem("Your position is 1 in queue Ilia"));
+    }
+
+    @Test
+    public void tryingToGetPositionWithNoCustomer() throws UnsupportedEncodingException {
+
+        RestAssured.post("/api/addNewQueue?queueName=Ilia");
+        RestAssured.post("/api/addToQueue?queueName=Ilia&phoneNumber=8012");
+        RestAssured.get("/api/getIndex?queueName=Ilia&phoneNumber=8020").then().statusCode(404).assertThat()
+                .body("", hasItem("There is no such user in this queue"));
+    }
 
 }

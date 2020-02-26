@@ -40,7 +40,7 @@ public class QueueHandler {
 
             endResponse(exchange, respText, respCode);
         }));
-
+//TODO Переписать на StringBuilder
 
         server.createContext("/api/deleteQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());

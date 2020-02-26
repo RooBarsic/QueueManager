@@ -164,7 +164,54 @@ public class CustomerHandler {
             }
             endResponse(exchange, respText, respCode);
         }));
+        server.createContext("/api/getIndex", (exchange -> {
+            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
+
+
+            String respText = "";
+            int respCode = 0;
+            if (exchange.getRequestMethod().equals("GET")) {
+
+                if (x.get("queueName") == null) {
+                    respText = "You need to specify queue name";
+                    respCode = 400;
+                } else {
+
+
+                    EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+
+
+                    if (customerEngineeredQueue == null) {
+                        respText = "No such queue";
+                        respCode = 404;
+                    } else {
+
+                        if (x.get("phoneNumber") == null) {
+                            respText = "You need to specify phone number";
+                            respCode = 400;
+
+                        } else {
+
+                            if (customerEngineeredQueue.findIndex(new Customer(x.get("phoneNumber"))) != -1) {
+                                respText = "Your position is " + customerEngineeredQueue.findIndex(new Customer(x.get("phoneNumber"))) + " in queue " + x.get("queueName");
+                                respCode = 200;
+                            } else {
+                                respText = "There is no such user in this queue";
+                                respCode = 404;
+                            }
+
+                        }
+                    }
+                }
+            } else {
+                respCode = 405;
+                respText = "Use another method";
+            }
+
+            endResponse(exchange, respText, respCode);
+        }));
     }
+
 
     public static void endResponse(HttpExchange exchange, String response, int respCode) throws IOException {
         String encoding = "UTF-8";
