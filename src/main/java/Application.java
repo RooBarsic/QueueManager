@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 class Application {
     private static HttpServer server;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         QueuesBox queuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
         //queuesBox.addQueue("sberbank");
@@ -27,20 +27,15 @@ class Application {
         }).start();
 
 
+        int serverPort = 8000;
+        server = HttpServer.create(new InetSocketAddress(serverPort), 0);
 
         new Thread(()-> {
-                try{
-                    int serverPort = 8000;
-                    server = HttpServer.create(new InetSocketAddress(serverPort), 0);
                     new CustomerHandler(server, queuesBox);
                     new QueueHandler(server, queuesBox);
                     server.setExecutor(null); // creates a default executor
                     server.start();
 
-                }
-                catch (IOException e){
-                    e.printStackTrace();
-                }
         }).start();
 
 
