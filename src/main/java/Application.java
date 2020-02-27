@@ -16,11 +16,8 @@ class Application {
     public static void main(String[] args) throws IOException {
 
         QueuesBox queuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
-        //queuesBox.addQueue("sberbank");
-
 
         new Thread(() -> {
-            //TODO : add GetMyPositionCommand, deleteFromQueueCommand
             BotInitializer botInitializer = new BotInitializer();
             botInitializer.run();
 

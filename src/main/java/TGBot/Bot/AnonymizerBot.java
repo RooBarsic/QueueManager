@@ -51,8 +51,12 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
         register(new JoinQueueCommand(mAnonymouses));
         LOG.info("registering '/show_all_queues'...");
         register(new ShowAllQueuesCommand(mAnonymouses));
+        LOG.info("registering '/get_position'...");
+        register(new GetPositionCommand(mAnonymouses));
         LOG.info("registering '/check_queue'...");
         register(new CheckStatusQueueCommand(mAnonymouses));
+        LOG.info("registering '/delete_user'...");
+        register(new DeleteFromQueueCommand(mAnonymouses));
         HelpCommand helpCommand = new HelpCommand(this);
         LOG.info("Registering '/help'...");
         register(helpCommand);

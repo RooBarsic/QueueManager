@@ -20,6 +20,7 @@ import java.util.List;
 abstract class AnonymizerCommand extends BotCommand {
 
     final Logger log = LogManager.getLogger(getClass());
+    final String url = "http://localhost:8000";
 
     AnonymizerCommand(String commandIdentifier, String description) {
         super(commandIdentifier, description);
@@ -40,7 +41,7 @@ abstract class AnonymizerCommand extends BotCommand {
      */
      protected List<String> readFromWeb(String webURL) throws IOException {
         List<String> result = new ArrayList<>();
-        URL url = new URL(webURL);
+        URL url = new URL(this.url + webURL);
         InputStream is =  url.openStream();
         try( BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String line;

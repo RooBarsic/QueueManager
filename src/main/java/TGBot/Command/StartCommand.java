@@ -37,7 +37,7 @@ public final class StartCommand extends AnonymizerCommand {
         if (mAnonymouses.addAnonymous(new Anonymous(user, chat))) {
             log.info("User {} is trying to execute '{}' the first time. Added to users' list.", user.getId(), getCommandIdentifier());
             sb.append("Hi, ").append(user.getUserName()).append("! You've been added to bot users' list!\n")
-                    .append("Please execute command:\n'/set_name <displayed_name>'\nwhere &lt;displayed_name&gt; is the name you want to use to hide your real name.");
+                    .append("Please execute command:\n'/set_name <displayed_name>'\n where <displayed_name> is the name you want to use to hide your real name.");
         } else {
            // log.log(Level.getLevel(LogLevel.STRANGE.getValue()), "User {} has already executed '{}'. Is he trying to do it one more time?", user.getId(), getCommandIdentifier());
             sb.append("You've already started bot! You can send messages if you set your name (/set_name).");

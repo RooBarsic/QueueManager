@@ -1,6 +1,5 @@
 package TGBot.Command;
 
-
 import TGBot.Service.AnonymousService;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -19,7 +18,6 @@ public final class MyNameCommand extends AnonymizerCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
 
-        //log.info(LogTemplate.COMMAND_PROCESSING.getTemplate(), user.getId(), getCommandIdentifier());
 
         StringBuilder sb = new StringBuilder();
 

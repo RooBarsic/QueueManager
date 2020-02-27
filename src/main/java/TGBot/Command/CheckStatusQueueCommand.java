@@ -6,8 +6,6 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
-import java.util.List;
-
 public class CheckStatusQueueCommand extends AnonymizerCommand {
 
     private final AnonymousService mAnonymouses;
@@ -32,9 +30,15 @@ public class CheckStatusQueueCommand extends AnonymizerCommand {
             else {
                 String nameQueue = strings[0];
                // System.out.println(nameQueue);
-                String url = "http://localhost:8000/api/getQueue?queueName=" + nameQueue;
-                //http://localhost:8000/api/getQueue?queueName=sberbank
-                sb.append(getResponeToBot(url));
+                String url = "/api/getQueue?queueName=" + nameQueue;
+                //sb.append(getResponeToBot(url));
+                String lines = getResponeToBot(url).toString();
+                int temp = 0;
+                for(int i =0;i<lines.length();i++) if (lines.charAt(i)=='\n') temp++;
+                sb.append("There is ")
+                  .append(temp)
+                  .append(" people in given queue.");
+
             }
         }
 

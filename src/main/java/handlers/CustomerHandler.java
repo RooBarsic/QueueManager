@@ -31,7 +31,6 @@ public class CustomerHandler {
         }));
 
         server.createContext("/api/addToQueue", (exchange -> {
-            //TODO need to name of customer, not only phone
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
 
 
@@ -51,10 +50,9 @@ public class CustomerHandler {
 
                         } else {
 
-                            if (customerEngineeredQueue.add(new Customer(x.get("phoneNumber")))) respText = "Success";
+                            if (customerEngineeredQueue.add(new Customer(x.get("nameUser"),x.get("phoneNumber")))) respText = "Success";
                             else
                                 respText = "There is another customer with this phone number";
-
                         }
                     }
                 }
@@ -73,13 +71,17 @@ public class CustomerHandler {
                 if (customerEngineeredQueue == null) {
                     respText = "No such queue";
                 } else {
-
                     if (x.get("phoneNumber") == null) {
                         respText = "You need to specify phone number";
                     } else {
+                        Customer temp = new Customer(x.get("phoneNumber"));
 
-                        customerEngineeredQueue.remove(new Customer(x.get("phoneNumber")));
-                        respText = "Deleted";
+                        if (customerEngineeredQueue.findIndex(temp)==-1) respText = "No such user in given queue!";
+                        else{
+                            customerEngineeredQueue.remove(temp);
+                            respText = "Deleted";
+                        }
+
                     }
                 }
             }
@@ -88,11 +90,9 @@ public class CustomerHandler {
         }));
 
         server.createContext("/api/getQueue", (exchange -> {
-            //TODO change to getPosition
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
             String respText = "";
             if (x.get("queueName") == null) {
-
                 respText = "You need to specify queue name";
             } else {
 
@@ -102,17 +102,37 @@ public class CustomerHandler {
                     respText = "No such queue";
                 } else if (customerEngineeredQueue.size()==0) respText="There is nobody in this queue";
                 else {
-
                     int i = 1;
                     for (Customer cs : customerEngineeredQueue.values()) {
                         respText = respText + cs.getPhoneNumber() + "\n";
                         i++;
                     }
-
-
+                 //   respText="There are " + customerEngineeredQueue.size() + " people before you";
                 }
             }
             endResponse(exchange, respText);
+        }));
+
+        //TODO write README file
+        server.createContext("/api/getMyPosition",(exchange ->{
+            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
+            String respText = "";
+            if (x.get("queueName") == null) {
+                respText = "You need to specify queue name";
+            } else {
+                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+                if (customerEngineeredQueue == null) respText = "No such queues";
+                else {
+                    if (x.get("phoneNumber") == null) {
+                        respText = "You need to specify phone number";
+                    } else {
+                        int index = customerEngineeredQueue.findIndex(new Customer(x.get("phoneNumber")));
+                        if (index==-1) respText = "There is no user with this number phone in given queue";
+                        else respText = "There are " + --index +  " people before you";
+                    }
+                }
+            }
+            endResponse(exchange,respText);
         }));
     }
 

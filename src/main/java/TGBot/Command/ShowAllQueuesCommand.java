@@ -7,14 +7,6 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-
 public class ShowAllQueuesCommand extends AnonymizerCommand {
 
     private final AnonymousService mAnonymouses;
@@ -34,7 +26,7 @@ public class ShowAllQueuesCommand extends AnonymizerCommand {
         }else if (mAnonymouses.getDisplayedName(user) == null) {
             sb.append("Currently you don't have a name.\nSet it using command: /set_name ");
         }else {
-            String url = "http://localhost:8000/api/getAllQueues";
+            String url = "/api/getAllQueues";
             sb.append(getResponeToBot(url));
         }
 
