@@ -28,7 +28,8 @@ public final class AnonymizerBot extends TelegramLongPollingCommandBot {
 
     private final AnonymousService mAnonymouses;
 
-    public AnonymizerBot(DefaultBotOptions botOptions) {
+    //public AnonymizerBot(DefaultBotOptions botOptions)
+    public AnonymizerBot() {
 
         //super(botOptions, false);
 
