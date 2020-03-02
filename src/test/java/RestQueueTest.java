@@ -29,25 +29,38 @@ public class RestQueueTest {
     @Test
     public void tryingToAddNewQueue() throws UnsupportedEncodingException {
 
-        RestAssured.get("/api/addNewQueue?queueName=Ilia").then().statusCode(200).assertThat()
+        RestAssured.post("/api/addNewQueue?queueName=Ilia").then().statusCode(201).assertThat()
                 .body("", hasItem("New queue Ilia has been created"));
     }
 
     @Test
     public void tryingToAddQueueWithSameName() throws UnsupportedEncodingException {
-        RestAssured.get("/api/addNewQueue?queueName=Ilia");
-        RestAssured.get("/api/addNewQueue?queueName=Ilia").then().statusCode(200).assertThat()
+        RestAssured.post("/api/addNewQueue?queueName=Ilia");
+        RestAssured.post("/api/addNewQueue?queueName=Ilia").then().statusCode(409).assertThat()
                 .body("", hasItem("Queue Ilia already exist."));
     }
 
+    public void tryingToAddQueueWithAnotherMethod() throws UnsupportedEncodingException {
+        RestAssured.get("/api/addNewQueue?queueName=Ilia").then().statusCode(405).assertThat()
+                .body("", hasItem("Use another method"));
+    }
+
+
     @Test
     public void tryingToDeleteQueue() throws UnsupportedEncodingException {
-        RestAssured.get("/api/addNewQueue?queueName=Ilia");
-        RestAssured.get("/api/deleteQueue?queueName=Ilia").then().statusCode(200).assertThat()
+        RestAssured.post("/api/addNewQueue?queueName=Ilia");
+        RestAssured.delete("/api/deleteQueue?queueName=Ilia").then().statusCode(200).assertThat()
                 .body("", hasItem("Queue Ilia deleted"));
-        RestAssured.get("/api/deleteQueue?queueName=Ilia").then().statusCode(200).assertThat()
+        RestAssured.delete("/api/deleteQueue?queueName=Ilia").then().statusCode(404).assertThat()
                 .body("", hasItem("Queue Ilia does not exist."));
     }
 
+    @Test
+    public void tryingToDeleteQueueWithAnotherMethod() throws UnsupportedEncodingException {
+        RestAssured.post("/api/addNewQueue?queueName=Ilia");
+        RestAssured.get("/api/deleteQueue?queueName=Ilia").then().statusCode(405).assertThat()
+                .body("", hasItem("Use another method"));
+
+    }
 
 }

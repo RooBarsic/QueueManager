@@ -20,40 +20,56 @@ public class QueueHandler {
 
 
         server.createContext("/api/addNewQueue", (exchange -> {
+
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
             String respText;
-            if (queuesBox.addQueue(x.get("queueName"))) {
-                respText = "New queue " + x.get("queueName") + " has been created";
+            int respCode;
+
+            if (exchange.getRequestMethod().equals("POST")) {
+                if (queuesBox.addQueue(x.get("queueName"))) {
+                    respCode = 201;
+                    respText = "New queue " + x.get("queueName") + " has been created";
+                } else {
+                    respCode = 409;
+                    respText = "Queue " + x.get("queueName") + " already exist.";
+                }
             } else {
-                respText = "Queue " + x.get("queueName") + " already exist.";
+                respCode = 405;
+                respText = "Use another method";
             }
 
-
-            endResponse(exchange, respText);
+            endResponse(exchange, respText, respCode);
         }));
-
+//TODO Переписать на StringBuilder
 
         server.createContext("/api/deleteQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
             String respText;
-            if (queuesBox.removeQueue(x.get("queueName"))) {
-                respText = "Queue " + x.get("queueName") + " deleted";
+            int respCode;
+            if (exchange.getRequestMethod().equals("DELETE")) {
+                if (queuesBox.removeQueue(x.get("queueName"))) {
+                    respText = "Queue " + x.get("queueName") + " deleted";
+                    respCode = 200;
+                } else {
+                    respText = "Queue " + x.get("queueName") + " does not exist.";
+                    respCode = 404;
+                }
             } else {
-                respText = "Queue " + x.get("queueName") + " does not exist.";
+                respCode = 405;
+                respText = "Use another method";
             }
-
-            endResponse(exchange, respText);
+            endResponse(exchange, respText, respCode);
         }));
 
 
     }
 
-    public static void endResponse(HttpExchange exchange, String response) throws IOException {
+    public static void endResponse(HttpExchange exchange, String response, int respCode) throws IOException {
         String encoding = "UTF-8";
 
         exchange.getResponseHeaders().set("Content-Type", "text/html; charset=" + encoding);
 
-        exchange.sendResponseHeaders(200, response.getBytes().length);
+        exchange.sendResponseHeaders(respCode, response.getBytes().length);
         OutputStream output = exchange.getResponseBody();
         output.write(response.getBytes());
         output.flush();
