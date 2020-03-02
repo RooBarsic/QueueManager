@@ -51,4 +51,11 @@ public class Customer {
         return getPhoneNumber().hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
 }

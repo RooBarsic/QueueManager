@@ -21,13 +21,25 @@ public class CustomerHandler {
 
 
         server.createContext("/api/getAllQueues", (exchange -> {
+            int respCode = 0;
             String respText = "";
-            if (!queuesBox.getQueuesNames().isEmpty()) {
-                for (Object name : queuesBox.getQueuesNames()) respText = respText.concat(name.toString().concat("\n"));
+            if (exchange.getRequestMethod().equals("GET")) {
+
+
+                if (!queuesBox.getQueuesNames().isEmpty()) {
+                    for (Object name : queuesBox.getQueuesNames())
+                        respText = respText.concat(name.toString().concat("\n"));
+
+                    respCode = 200;
+                } else {
+                    respText = "Empty...";
+                    respCode = 200;
+                }
             } else {
-                respText = "Empty...";
+                respCode = 405;
+                respText = "Use another method";
             }
-            endResponse(exchange, respText);
+            endResponse(exchange, respText, respCode);
         }));
 
         server.createContext("/api/addToQueue", (exchange -> {
@@ -35,112 +47,177 @@ public class CustomerHandler {
 
 
             String respText = "";
+            int respCode = 0;
+            if (exchange.getRequestMethod().equals("POST")) {
+
                 if (x.get("queueName") == null) {
                     respText = "You need to specify queue name";
+                    respCode = 400;
                 } else {
+
 
                     EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
 
+
                     if (customerEngineeredQueue == null) {
                         respText = "No such queue";
+                        respCode = 404;
                     } else {
 
                         if (x.get("phoneNumber") == null) {
                             respText = "You need to specify phone number";
+                            respCode = 400;
 
                         } else {
 
-                            if (customerEngineeredQueue.add(new Customer(x.get("nameUser"),x.get("phoneNumber")))) respText = "Success";
-                            else
+                            if (customerEngineeredQueue.add(new Customer(x.get("phoneNumber")))) {
+                                respText = "Success";
+                                respCode = 201;
+                            } else {
                                 respText = "There is another customer with this phone number";
+                                respCode = 409;
+                            }
+
                         }
                     }
                 }
+            } else {
+                respCode = 405;
+                respText = "Use another method";
+            }
 
-            endResponse(exchange, respText);
+            endResponse(exchange, respText, respCode);
         }));
-
 
         server.createContext("/api/deleteFromQueue", (exchange -> {
+
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
             String respText;
-            if (x.get("queueName") == null) {
-                respText = "You need to specify queue name";
-            } else {
-                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
-                if (customerEngineeredQueue == null) {
-                    respText = "No such queue";
-                } else {
-                    if (x.get("phoneNumber") == null) {
-                        respText = "You need to specify phone number";
-                    } else {
-                        Customer temp = new Customer(x.get("phoneNumber"));
+            int respCode = 0;
 
-                        if (customerEngineeredQueue.findIndex(temp)==-1) respText = "No such user in given queue!";
-                        else{
-                            customerEngineeredQueue.remove(temp);
+            if (exchange.getRequestMethod().equals("DELETE")) {
+
+                if (x.get("queueName") == null) {
+                    respCode = 400;
+                    respText = "You need to specify queue name";
+                } else {
+                    EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+                    if (customerEngineeredQueue == null) {
+                        respCode = 404;
+                        respText = "No such queue";
+                    } else {
+
+                        if (x.get("phoneNumber") == null) {
+                            respCode = 400;
+                            respText = "You need to specify phone number";
+                        } else {
+                            respCode = 200;
+                            customerEngineeredQueue.remove(new Customer(x.get("phoneNumber")));
                             respText = "Deleted";
                         }
-
                     }
                 }
+            } else {
+                respCode = 405;
+                respText = "Use another method";
             }
-            endResponse(exchange, respText);
+            endResponse(exchange, respText, respCode);
 
         }));
-
         server.createContext("/api/getQueue", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
             String respText = "";
-            if (x.get("queueName") == null) {
-                respText = "You need to specify queue name";
-            } else {
+            int respCode = 0;
 
-                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+            if (exchange.getRequestMethod().equals("GET")) {
 
-                if (customerEngineeredQueue == null) {
-                    respText = "No such queue";
-                } else if (customerEngineeredQueue.size()==0) respText="There is nobody in this queue";
-                else {
-                    int i = 1;
-                    for (Customer cs : customerEngineeredQueue.values()) {
-                        respText = respText + cs.getPhoneNumber() + "\n";
-                        i++;
-                    }
-                 //   respText="There are " + customerEngineeredQueue.size() + " people before you";
-                }
-            }
-            endResponse(exchange, respText);
-        }));
 
-        //TODO write README file
-        server.createContext("/api/getMyPosition",(exchange ->{
-            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
-            String respText = "";
-            if (x.get("queueName") == null) {
-                respText = "You need to specify queue name";
-            } else {
-                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
-                if (customerEngineeredQueue == null) respText = "No such queues";
-                else {
-                    if (x.get("phoneNumber") == null) {
-                        respText = "You need to specify phone number";
+                if (x.get("queueName") == null) {
+                    respCode = 400;
+                    respText = "You need to specify queue name";
+                } else {
+
+
+                    EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+
+
+                    if (customerEngineeredQueue == null) {
+                        respText = "No such queue";
+                        respCode = 404;
                     } else {
-                        int index = customerEngineeredQueue.findIndex(new Customer(x.get("phoneNumber")));
-                        if (index==-1) respText = "There is no user with this number phone in given queue";
-                        else respText = "There are " + --index +  " people before you";
+
+                        int i = 1;
+                        for (Customer cs : customerEngineeredQueue.values()) {
+
+
+                            respText = respText + cs.getPhoneNumber() + "\n";
+                            i++;
+                            respCode = 200;
+                        }
+
+
                     }
                 }
+            } else {
+                respCode = 405;
+                respText = "Use another method";
             }
-            endResponse(exchange,respText);
+            endResponse(exchange, respText, respCode);
+        }));
+        server.createContext("/api/getIndex", (exchange -> {
+            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
+
+
+            String respText = "";
+            int respCode = 0;
+            if (exchange.getRequestMethod().equals("GET")) {
+
+                if (x.get("queueName") == null) {
+                    respText = "You need to specify queue name";
+                    respCode = 400;
+                } else {
+
+
+                    EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+
+
+                    if (customerEngineeredQueue == null) {
+                        respText = "No such queue";
+                        respCode = 404;
+                    } else {
+
+                        if (x.get("phoneNumber") == null) {
+                            respText = "You need to specify phone number";
+                            respCode = 400;
+
+                        } else {
+
+                            if (customerEngineeredQueue.findIndex(new Customer(x.get("phoneNumber"))) != -1) {
+                                respText = "Your position is " + customerEngineeredQueue.findIndex(new Customer(x.get("phoneNumber"))) + " in queue " + x.get("queueName");
+                                respCode = 200;
+                            } else {
+                                respText = "There is no such user in this queue";
+                                respCode = 404;
+                            }
+
+                        }
+                    }
+                }
+            } else {
+                respCode = 405;
+                respText = "Use another method";
+            }
+
+            endResponse(exchange, respText, respCode);
         }));
     }
 
-    public static void endResponse(HttpExchange exchange, String response) throws IOException {
+
+    public static void endResponse(HttpExchange exchange, String response, int respCode) throws IOException {
         String encoding = "UTF-8";
 
         exchange.getResponseHeaders().set("Content-Type", "text/html; charset=" + encoding);
-        exchange.sendResponseHeaders(200, response.getBytes().length);
+        exchange.sendResponseHeaders(respCode, response.getBytes().length);
         OutputStream output = exchange.getResponseBody();
         output.write(response.getBytes());
         output.flush();
