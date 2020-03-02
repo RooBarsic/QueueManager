@@ -26,7 +26,7 @@ public class ShowAllQueuesCommand extends AnonymizerCommand {
         }else if (mAnonymouses.getDisplayedName(user) == null) {
             sb.append("Currently you don't have a name.\nSet it using command: /set_name ");
         }else {
-            String url = "/api/getAllQueues";
+            String url = "/api/getAllQueuesForBot";
             sb.append(getResponeToBot(url));
         }
 

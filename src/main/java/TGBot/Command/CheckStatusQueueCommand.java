@@ -30,7 +30,7 @@ public class CheckStatusQueueCommand extends AnonymizerCommand {
             else {
                 String nameQueue = strings[0];
                // System.out.println(nameQueue);
-                String url = "/api/getQueue?queueName=" + nameQueue;
+                String url = "/api/getQueueForBot?queueName=" + nameQueue;
                 //sb.append(getResponeToBot(url));
                 String lines = getResponeToBot(url).toString();
                 int temp = 0;

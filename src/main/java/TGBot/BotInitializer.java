@@ -24,10 +24,10 @@ public class BotInitializer {
 
     public void run() {
        //This part for some internet user in russia
-        System.getProperties().put("proxySet","true");
+       /* System.getProperties().put("proxySet","true");
         System.getProperties().put("socksProxyHost","127.0.0.1");
         System.getProperties().put("socksProxyPort","9150");
-
+*/
         //QueuesBox QueuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
         try {
 
@@ -44,8 +44,8 @@ public class BotInitializer {
             botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS4);
 
             LOG.info("Registering Anonymizer...");
-            //botsApi.registerBot(new AnonymizerBot(botOptions));
-			botsApi.registerBot(new AnonymizerBot());
+            botsApi.registerBot(new AnonymizerBot(botOptions));
+			//botsApi.registerBot(new AnonymizerBot());
 
             LOG.info("Bot is ready for work!");
 

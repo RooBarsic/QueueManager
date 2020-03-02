@@ -33,7 +33,7 @@ public class DeleteFromQueueCommand extends AnonymizerCommand {
 
             if (numberPhone==null) sb.append("Please correct your number phone!");
             else {
-                String url = "/api/deleteFromQueue?queueName=" + nameQueue + "&phoneNumber=" + numberPhone;
+                String url = "/api/deleteFromQueueForBot?queueName=" + nameQueue + "&phoneNumber=" + numberPhone;
                 sb.append(getResponeToBot(url));
             }
         }

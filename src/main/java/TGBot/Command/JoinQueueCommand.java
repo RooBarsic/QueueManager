@@ -40,7 +40,7 @@ public class JoinQueueCommand extends AnonymizerCommand {
             if (nameUser==null) sb.append("Please correct your name!");
             else if (numberPhone==null) sb.append("Please correct your number phone!");
             else {
-                String url = "/api/addToQueue?queueName=" + nameQueue + "&nameUser=" + nameUser + "&phoneNumber=" + numberPhone;
+                String url = "/api/addToQueueForBot?queueName=" + nameQueue + "&nameUser=" + nameUser + "&phoneNumber=" + numberPhone;
                 sb.append(getResponeToBot(url));
             }
         }
