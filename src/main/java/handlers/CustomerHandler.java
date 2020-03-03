@@ -55,7 +55,6 @@ public class CustomerHandler {
                     respCode = 400;
                 } else {
 
-
                     EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
 
 
@@ -131,12 +130,10 @@ public class CustomerHandler {
 
             if (exchange.getRequestMethod().equals("GET")) {
 
-
                 if (x.get("queueName") == null) {
                     respCode = 400;
                     respText = "You need to specify queue name";
                 } else {
-
 
                     EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
 
@@ -145,17 +142,12 @@ public class CustomerHandler {
                         respText = "No such queue";
                         respCode = 404;
                     } else {
-
                         int i = 1;
                         for (Customer cs : customerEngineeredQueue.values()) {
-
-
                             respText = respText + cs.getPhoneNumber() + "\n";
                             i++;
                             respCode = 200;
                         }
-
-
                     }
                 }
             } else {
@@ -164,6 +156,7 @@ public class CustomerHandler {
             }
             endResponse(exchange, respText, respCode);
         }));
+
         server.createContext("/api/getIndex", (exchange -> {
             Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
 
@@ -179,7 +172,6 @@ public class CustomerHandler {
 
 
                     EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
-
 
                     if (customerEngineeredQueue == null) {
                         respText = "No such queue";
@@ -210,6 +202,122 @@ public class CustomerHandler {
 
             endResponse(exchange, respText, respCode);
         }));
+
+        //Those part behind is used for TGBot
+        server.createContext("/api/getAllQueuesForBot", (exchange -> {
+            String respText = "";
+            if (!queuesBox.getQueuesNames().isEmpty()) {
+                for (Object name : queuesBox.getQueuesNames()) respText = respText.concat(name.toString().concat("\n"));
+            } else {
+                respText = "Empty...";
+            }
+            endResponse(exchange, respText,200);
+        }));
+
+        server.createContext("/api/addToQueueForBot", (exchange -> {
+            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
+
+
+            String respText = "";
+            if (x.get("queueName") == null) {
+                respText = "You need to specify queue name";
+            } else {
+
+                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+
+                if (customerEngineeredQueue == null) {
+                    respText = "No such queue";
+                } else {
+
+                    if (x.get("phoneNumber") == null) {
+                        respText = "You need to specify phone number";
+
+                    } else {
+
+                        if (customerEngineeredQueue.add(new Customer(x.get("nameUser"),x.get("phoneNumber")))) respText = "Success";
+                        else
+                            respText = "There is another customer with this phone number";
+                    }
+                }
+            }
+
+            endResponse(exchange, respText,200);
+        }));
+
+
+        server.createContext("/api/deleteFromQueueForBot", (exchange -> {
+            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
+            String respText;
+            if (x.get("queueName") == null) {
+                respText = "You need to specify queue name";
+            } else {
+                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+                if (customerEngineeredQueue == null) {
+                    respText = "No such queue";
+                } else {
+                    if (x.get("phoneNumber") == null) {
+                        respText = "You need to specify phone number";
+                    } else {
+                        Customer temp = new Customer(x.get("phoneNumber"));
+
+                        if (customerEngineeredQueue.findIndex(temp)==-1) respText = "No such user in given queue!";
+                        else{
+                            customerEngineeredQueue.remove(temp);
+                            respText = "Deleted";
+                        }
+
+                    }
+                }
+            }
+            endResponse(exchange, respText,200);
+
+        }));
+
+        server.createContext("/api/getQueueForBot", (exchange -> {
+            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
+            String respText = "";
+            if (x.get("queueName") == null) {
+                respText = "You need to specify queue name";
+            } else {
+
+                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+
+                if (customerEngineeredQueue == null) {
+                    respText = "No such queue";
+                } else if (customerEngineeredQueue.size()==0) respText="There is nobody in this queue";
+                else {
+                    int i = 1;
+                    for (Customer cs : customerEngineeredQueue.values()) {
+                        respText = respText + cs.getPhoneNumber() + "\n";
+                        i++;
+                    }
+                    //respText="There are " + customerEngineeredQueue.size() + " people before you";
+                }
+            }
+            endResponse(exchange, respText,200);
+        }));
+
+        server.createContext("/api/getMyPosition",(exchange ->{
+            Map<String, String> x = splitQuery(exchange.getRequestURI().getRawQuery());
+            String respText = "";
+            if (x.get("queueName") == null) {
+                respText = "You need to specify queue name";
+            } else {
+                EngineeredQueue<Customer> customerEngineeredQueue = queuesBox.getQueue(x.get("queueName"));
+                if (customerEngineeredQueue == null) respText = "No such queues";
+                else {
+                    if (x.get("phoneNumber") == null) {
+                        respText = "You need to specify phone number";
+                    } else {
+                        int index = customerEngineeredQueue.findIndex(new Customer(x.get("phoneNumber")));
+                        if (index==-1) respText = "There is no user with this number phone in given queue";
+                        else respText = "There are " + --index +  " people before you";
+                    }
+                }
+            }
+            endResponse(exchange,respText,200);
+        }));
+
     }
 
 

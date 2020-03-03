@@ -19,6 +19,7 @@ public class QueuesBox<T> {
     private final Map<String, EngineeredQueue<T>> queueByName = new HashMap<>();
 
     public QueuesBox(@NotNull final ControllerIO controllerIO){
+
         this.controllerIO = controllerIO;
     }
 
@@ -48,6 +49,7 @@ public class QueuesBox<T> {
             return false;
         }
         queueByName.put(queueName, new EngineeredQueue<T>(queueName));
+        System.out.println("Success add queue" + queueName);
         return true;
     }
 

@@ -1,3 +1,4 @@
+import TGBot.BotInitializer;
 import com.sun.net.httpserver.HttpServer;
 import handlers.CustomerHandler;
 import handlers.QueueHandler;
@@ -14,15 +15,28 @@ class Application {
     private static HttpServer server;
     public static void main(String[] args) throws IOException {
 
-
         QueuesBox queuesBox = new QueuesBox(new ControllerIO(new Scanner(System.in), new PrintWriter(System.out)));
+
+        new Thread(() -> {
+            BotInitializer botInitializer = new BotInitializer();
+            botInitializer.run();
+
+        }).start();
+
 
         int serverPort = 8000;
         server = HttpServer.create(new InetSocketAddress(serverPort), 0);
-        new CustomerHandler(server, queuesBox);
-        new QueueHandler(server, queuesBox);
-        server.setExecutor(null); // creates a default executor
-        server.start();
+
+        new Thread(()-> {
+                    new CustomerHandler(server, queuesBox);
+                    new QueueHandler(server, queuesBox);
+                    server.setExecutor(null); // creates a default executor
+                    server.start();
+
+        }).start();
+
+
+
     }
 
     public HttpServer getServer() {
